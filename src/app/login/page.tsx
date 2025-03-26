@@ -4,11 +4,12 @@ import React from "react"
 import { useRouter } from "next/navigation"
 import axios from "axios"
 import toast from "react-hot-toast"
+import { NextResponse } from "next/server"
 
 
 
 
-export default function loginPage(){
+export default function LoginPage(){
     const router= useRouter();
 
     const [user, setUser] = React.useState({
@@ -23,10 +24,13 @@ export default function loginPage(){
             console.log("login success",response.data)
             toast.success("Login success")
             router.push("/profile")
-        } catch (error:any) {
-            console.log("Login Failed", error.message)
-            toast.error(error.message)
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return NextResponse.json({ error: error.message }, { status: 500 });
+            }
+            return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
         }
+        
     
     }
     return(
@@ -53,7 +57,7 @@ export default function loginPage(){
            <button
            onClick={onlogin}
            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 hover:cursor-pointer">login</button>
-           <h3 className="text-blue-600 hover:cursor-pointer ">Didn't have an account?<span className="text-white mx-2"><Link href="/signup">Signup</Link></span></h3>
+           <h3 className="text-blue-600 hover:cursor-pointer ">Didn&apos;t have an account?<span className="text-white mx-2"><Link href="/signup">Signup</Link></span></h3>
            
            </div>
         </div>

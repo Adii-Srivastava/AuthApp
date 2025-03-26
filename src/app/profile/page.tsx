@@ -1,28 +1,33 @@
 "use client"
 import axios from "axios";
-import Link from "next/link";
+// import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-export default function profilePage(){
+// import { useState } from "react";
+import { NextResponse } from "next/server";
+
+export default function ProfilePage(){
     const router= useRouter();
-    const [data, setData] = useState("nothing")
+    // const [data, setData] = useState("nothing")
      const logout=async()=>{
           try {
             await axios.get('/api/users/logout')
             toast.success('Logout successful')
             router.push('/login')
-          } catch (error:any) {
-            console.log(error.message)
-            toast.error(error.message)
-          }
+          } catch (error: unknown) {
+            if (error instanceof Error) {
+                return NextResponse.json({ error: error.message }, { status: 500 });
+            }
+            return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
+        }
+        
      }
 
-     const getUserDetail= async()=>{
-        const res=await axios.get('/api/users/me')
-        console.log(res.data)
-        setData(res.data.data._id)
-     }
+    //  const getUserDetail= async()=>{
+    //     const res=await axios.get('/api/users/me')
+    //     console.log(res.data)
+    //     // setData(res.data.data._id)
+    //  }
     return(
         <div className="flex flex-col items-center justify-center min-h-screen py-2">
            

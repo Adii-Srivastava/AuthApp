@@ -3,12 +3,13 @@ import Link from "next/link"
 import React from "react"
 import { useRouter } from "next/navigation"
 import axios from "axios"
-import toast from "react-hot-toast"
+// import toast from "react-hot-toast"
+import { NextResponse } from "next/server"
 
 
 
 
-export default function signupPage(){
+export default function SignupPage(){
     const router= useRouter();
     const [user, setUser] = React.useState({
         email:"",
@@ -23,10 +24,13 @@ export default function signupPage(){
         console.log("Signup success",response.data)
         router.push("/login")
         
-       } catch (error:any) {
-        console.log("Signup failed", error.message)
-        toast.error(error.message)
-       }
+       } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+        return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
+    }
+    
     }
 
     // React.useEffect(()=>{
